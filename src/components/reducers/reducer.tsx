@@ -1,7 +1,7 @@
 import { Book, State } from "../../types/alltypes";
-import generateId from "../../utils/genrateid";
+
 export type Action =
-  | { type: 'ADD_BOOK'; payload: Omit<Book, 'id'> }
+  | { type: 'ADD_BOOK'; payload: Book }
   | { type: 'UPDATE_BOOK'; payload: Book }
   | { type: 'DELETE_BOOK'; payload: string }
   | { type: 'SET_PAGE'; payload: number }
@@ -9,18 +9,17 @@ export type Action =
   | { type: 'SET_BOOKS'; payload: Book[] }
   | { type: 'SET_EDITING_BOOK'; payload:Book};
 
-export const InitialState: State = {
-  books: [],
-  currentPage: 1,
-  booksPerPage: 5,
-  searchTerm: '',
- 
-};
+  export const InitialState: State = {
+    books: [],
+    currentPage: 1,
+    booksPerPage: 5,
+    searchTerm: '',
+  };
 
 const Reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'ADD_BOOK':
-      return { ...state, books: [...state.books, { ...action.payload, id: generateId() }] };
+      return { ...state, books: [...state.books, { ...action.payload}] };
     case 'UPDATE_BOOK':
       return {
         ...state,
@@ -38,4 +37,5 @@ const Reducer = (state: State, action: Action): State => {
       return state;
   }
 };
+
 export default Reducer;

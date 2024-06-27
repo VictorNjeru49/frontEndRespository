@@ -1,7 +1,7 @@
 import { Book } from "../types/alltypes";
 import Apiset from "./routes";
 
-export const getBooks = async () => {
+export const getBooks = async (): Promise<Book[]> => {
   try {
     const response = await Apiset.get<Book[]>("/books");
     return response.data;
@@ -11,7 +11,7 @@ export const getBooks = async () => {
   }
 };
 
-export const getBookById = async (id: string) => {
+export const getBookById = async (id: string): Promise<Book> => {
   try {
     const response = await Apiset.get<Book>(`/books/${id}`);
     return response.data;
@@ -21,17 +21,17 @@ export const getBookById = async (id: string) => {
   }
 };
 
-export const createBook = async (book: Omit<Book, "id">) => {
+export const createBook = async (book: Book): Promise<Book> => {
   try {
     const response = await Apiset.post<Book>("/books", book);
     return response.data;
   } catch (error) {
-    console.error(error);
+    console.log(error);
     throw error;
   }
 };
 
-export const updateBook = async (id: string, updates: Partial<Book>) => {
+export const updateBook = async (id: string, updates: Partial<Book>): Promise<Book> => {
   try {
     const response = await Apiset.put<Book>(`/books/${id}`, updates);
     return response.data;
@@ -41,7 +41,7 @@ export const updateBook = async (id: string, updates: Partial<Book>) => {
   }
 };
 
-export const deleteBook = async (id: string) => {
+export const deleteBook = async (id: string): Promise<void> => {
   try {
     await Apiset.delete(`/books/${id}`);
   } catch (error) {
@@ -50,7 +50,7 @@ export const deleteBook = async (id: string) => {
   }
 };
 
-export const searchBooks = async (searchTerm: string) => {
+export const searchBooks = async (searchTerm: string): Promise<Book[]> => {
   try {
     const response = await Apiset.get<Book[]>(`/books?q=${searchTerm}`);
     return response.data;

@@ -1,11 +1,11 @@
-import { useReducer, useEffect, useCallback, useState } from 'react';
-import '../App.scss'
+import React, { useReducer, useEffect, useState, useCallback } from 'react';
+import '../App.scss';
 import { Book } from '../types/alltypes';
 import BookForm from './bookform';
-import { getBooks, getBookById, createBook, updateBook, deleteBook, searchBooks } from '../API/apiservices';
-import Reducer, { InitialState,  } from './reducers/reducer';
+import { getBooks, getBookById, createBook, updateBook, deleteBook } from '../API/apiservices';
+import Reducer, { InitialState } from './reducers/reducer';
 
-const BookRepository = () => {
+const BookRepository: React.FC = () => {
   const [state, dispatch] = useReducer(Reducer, InitialState);
   const [currentPage, setCurrentPage] = useState(1);
   const [booksPerPage] = useState(5);
@@ -25,7 +25,7 @@ const BookRepository = () => {
     }
   }, [editingBook]);
 
-  const handleAddBook = async (book: Omit<Book, 'id'>) => {
+  const handleAddBook = async (book: Book) => {
     const newBook = await createBook(book);
     dispatch({ type: 'ADD_BOOK', payload: newBook });
   };
@@ -46,11 +46,6 @@ const BookRepository = () => {
     dispatch({ type: 'DELETE_BOOK', payload: id });
   };
 
-  const handleSearchBooks = async (searchTerm: string) => {
-    const books = await searchBooks(searchTerm);
-    dispatch({ type: 'SET_BOOKS', payload: books });
-    setCurrentPage(1);
-  };
 
   const handlePageChange = useCallback((pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -72,7 +67,7 @@ const BookRepository = () => {
         type="text"
         placeholder="Search by title"
         value={state.searchTerm}
-        onChange={(e) => handleSearchBooks(e.target.value)}
+        onChange={(e) =>  dispatch({ type: 'SET_SEARCH_TERM', payload: e.target.value })}
       />
       <table>
         <thead>

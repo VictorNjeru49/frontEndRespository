@@ -1,32 +1,34 @@
-import React, { useRef, FC } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Book } from '../types/alltypes';
-import '../App.scss'
-
+import '../App.scss';
 
 interface BookFormProps {
-  onSubmit: (book: Omit<Book, 'id'>) => void;
+  onSubmit: (book: Book) => void;
   editingBook: Book | null;
   onUpdate: (book: Book) => void;
 }
 
-const BookForm: FC<BookFormProps> = ({ onSubmit, editingBook, onUpdate }) => {
-  
-
-
-
+const BookForm: React.FC<BookFormProps> = ({ onSubmit, editingBook, onUpdate }) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const authorRef = useRef<HTMLInputElement>(null);
   const yearRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (editingBook) {
+      if (titleRef.current) titleRef.current.value = editingBook.title;
+      if (authorRef.current) authorRef.current.value = editingBook.author;
+      if (yearRef.current) yearRef.current.value = editingBook.year.toString();
+    }
+  }, [editingBook]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (titleRef.current && authorRef.current && yearRef.current) {
-
       const newBook = {
+        id: editingBook ? editingBook.id : '',
         title: titleRef.current.value,
         author: authorRef.current.value,
         year: parseInt(yearRef.current.value),
-
       };
       onSubmit(newBook);
       titleRef.current.value = '';
@@ -50,6 +52,7 @@ const BookForm: FC<BookFormProps> = ({ onSubmit, editingBook, onUpdate }) => {
       yearRef.current.value = '';
     }
   };
+  
 
   return (
     <form onSubmit={editingBook ? handleUpdate : handleSubmit}>
